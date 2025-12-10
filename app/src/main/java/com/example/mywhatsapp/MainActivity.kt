@@ -6,15 +6,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -37,23 +46,31 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mywhatsapp.ui.theme.MyWhatsAppTheme
 import com.example.mywhatsapp.ui.theme.Pink40
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -63,17 +80,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyWhatsAppTheme {
 
-                var show by remember { mutableStateOf(false) }
-                var select by remember { mutableIntStateOf(1) }
-
                 val navController = rememberNavController()
                 val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
                     rememberTopAppBarState()
                 )
-                var state by remember { mutableStateOf(0) }
                 val titles = listOf("Chat", "Novedades", "Llamadas")
+                val coroutineScope = rememberCoroutineScope()
+                val pagerState = rememberPagerState(initialPage = 0, pageCount = { titles.size })
 
-                Scaffold(modifier = Modifier.fillMaxSize(),
+                LaunchedEffect(pagerState.currentPage) {
+                }
+                Scaffold(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     topBar = {
                         CenterAlignedTopAppBar(
                             scrollBehavior = scrollBehavior,
@@ -85,6 +103,7 @@ class MainActivity : ComponentActivity() {
                                     }) {
                                     Icon(imageVector = Icons.Filled.Search,
                                         contentDescription = "Buscar",
+                                        tint = Color(0xFFBCC2B1)
                                     )
                                 }
                                 IconButton(
@@ -92,23 +111,34 @@ class MainActivity : ComponentActivity() {
                                     }) {
                                     Icon(imageVector = Icons.Filled.Share,
                                         contentDescription = "Buscar",
+                                        tint = Color(0xFFBCC2B1)
+
                                     )
                                 }
                             },
                             colors= TopAppBarDefaults.topAppBarColors(
                                 containerColor =  Color(0xFF007B70),
                                 titleContentColor = Color(0xFFBCC2B1),
+                                scrolledContainerColor = Color(0xFF007B70)
                             )
                         )
                     },
                     floatingActionButton = {
 
+
                         FloatingActionButton(
-                            onClick = { show=false
-                                navController.navigate("Principal")
+                            containerColor=Color(0xFF007B70),
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(0)
+                                }
                             }
                         ) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Floating action button.")
+
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                                "Floating action button.",
+                                tint = Color(0xFFFFFFFF)
+                                )
                         }
 
 
@@ -117,25 +147,37 @@ class MainActivity : ComponentActivity() {
                 { innerPadding ->
                     Column(modifier = Modifier.padding(innerPadding)) {
                         PrimaryTabRow(
-                            selectedTabIndex = state,
+                            selectedTabIndex = pagerState.currentPage,
                             containerColor =  Color(0xFF007B70),
                             contentColor = Color(0xFFBCC2B1)
                             ) {
                             titles.forEachIndexed { index, title ->
                                 Tab(
-                                    selected = state == index,
-                                    onClick = { state = index },
-                                    text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
+                                    selected = pagerState.currentPage == index,
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
+                                    },
+                                    text = {
+                                        Text(text = title, maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis)
+                                           },
                                 )
                             }
 
                         }
-                        when(state){
-                            0->Chat(modifier = Modifier)
-                            1->Novedades(modifier = Modifier)
-                            2->Llamadas(modifier = Modifier)
+                        HorizontalPager(state = pagerState) { page ->
 
+                            when(page){
+                                0->Chat(modifier = Modifier)
+                                1->Novedades(modifier = Modifier)
+                                2->Llamadas(modifier = Modifier)
+
+                            }
                         }
+
+
 
                     }
 
@@ -168,18 +210,38 @@ fun Chat(modifier: Modifier) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         itemslist.forEach { (tipo, myItems) ->
             stickyHeader {
-                Text(
-                    text = tipo
-                )
+                Row (modifier=Modifier.background(Color(0xFFC3C3C4)).fillMaxWidth()){
+                    Text(
+                        text = tipo
+                    )
+                }
+
             }
 
             items(myItems) { index ->
-                Row {
+                var dropmenu by remember { mutableStateOf(false) }
+
+                Row (modifier = Modifier
+                    .pointerInput(true) {
+                        detectTapGestures(onLongPress = { dropmenu=!dropmenu }
+                        )
+                    }
+                    , verticalAlignment = Alignment.CenterVertically){
                     Image(
                         painter = painterResource(id = index.img),
-                        contentDescription = null)
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(160.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                        )
+                    Spacer(Modifier.size(10.dp))
                     Text(text=index.text)
+                    if(dropmenu){
+                        Dropdownmenu(modifier = Modifier, ondropmenu = { dropmenu= it})
+                    }
                 }
+
             }
         }
     }
@@ -188,54 +250,52 @@ fun Chat(modifier: Modifier) {
 
 @Composable
 fun Novedades(modifier: Modifier) {
-    Text(text = "novedades")
+    Column (modifier= modifier.fillMaxSize()){ Text(text = "novedades") }
+
 
 }
 
 @Composable
 fun Llamadas(modifier: Modifier) {
-    Text(text = "llamadas")
+    Column (modifier= modifier.fillMaxSize()){ Text(text = "llamadas") }
 
 }
 
 @Composable
-fun IconDropDownMenu(modifier: Modifier) {
-    var expanded by remember { mutableStateOf(false) }
+fun Dropdownmenu(modifier: Modifier, ondropmenu: (Boolean)->Unit) {
+    var expanded by remember { mutableStateOf(true) }
 
-    Column(Modifier.padding(20.dp)) {
-        IconButton(onClick = {
-            expanded = true
-        }) {
-            Icon(imageVector = Icons.Filled.MoreVert,
-                contentDescription = "Buscar",
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false
+            ondropmenu(false)
+        },
+        modifier=modifier
+    ) {
+        DropdownMenuItem(
+            onClick = { expanded = false
+                ondropmenu(false)
+
+            },
+            text = {Text(text = "Salir del grupo")}
+
+        )
+        DropdownMenuItem(
+            onClick = { expanded = false
+                ondropmenu(false)
+            },
+
+            text = {Text(text = "Info. grupo")},
+
             )
-        }
+        DropdownMenuItem(
+            onClick = { expanded = false
+                ondropmenu(false)
+            },
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-//            modifier = modifier.align(Alignment.End)
-        ) {
-            DropdownMenuItem(
-                onClick = { expanded = false
-                },
-                leadingIcon ={
-                    Icon(imageVector = Icons.Filled.Share,
-                        contentDescription = "Compartir")
-                },
-                text = {Text(text = "Compartir")}
+            text = {Text(text = "Crear acceso directo")},
 
             )
-            DropdownMenuItem(
-                onClick = { expanded = false },
-                leadingIcon ={
-                    Icon(imageVector = Icons.Filled.Lock,
-                        contentDescription = "Compartir")
-                },
-                text = {Text(text = "Album")},
 
-                )
-
-        }
     }
 }

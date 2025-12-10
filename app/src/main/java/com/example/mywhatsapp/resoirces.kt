@@ -14,48 +14,48 @@ data class item(
 
 val items: List<item> =listOf(
     item(
-        "1",
+        "playas",
         R.drawable.image,
-        "1"
+        "playas1"
     ),
     item(
-        "1",
+        "ciudades",
         R.drawable.image1,
-        "2"
+        "ciudades2"
     ),
     item(
-        "3",
+        "ciudades",
         R.drawable.image2,
-        "3"
+        "ciudades3"
     ),
     item(
-        "3",
+        "playas",
         R.drawable.image3,
-        "4"
+        "playas4"
     ),
     item(
-        "3",
+        "ciudades",
         R.drawable.image4,
-        "5"
+        "ciudades5"
     ),
     item(
-        "1",
+        "ciudades",
         R.drawable.image5,
-        "6"
+        "ciudades6"
     ),
     item(
-        "2",
+        "pueblos",
         R.drawable.image6,
-        "7"
+        "pueblos7"
     ),
     item(
-        "1",
+        "pueblos",
         R.drawable.image7,
-        "8"
+        "pueblos8"
     ),
     item(
-        "2",
+        "ciudades",
         R.drawable.image8,
-        "9"
+        "ciudades9"
     ),
     )
