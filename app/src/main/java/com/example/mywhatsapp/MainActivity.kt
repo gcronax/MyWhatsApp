@@ -1,12 +1,15 @@
 package com.example.mywhatsapp
 
-import android.R
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -129,17 +132,25 @@ class MainActivity : ComponentActivity() {
                         FloatingActionButton(
                             containerColor=Color(0xFF007B70),
                             onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(0)
-                                }
+//                                coroutineScope.launch {
+//                                    pagerState.animateScrollToPage(0)
+//                                }
                             }
                         ) {
 
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                                "Floating action button.",
-                                tint = Color(0xFFFFFFFF)
+                            val image =
+                                AnimatedImageVector.animatedVectorResource(R.drawable.ad_animaciones
                                 )
+                            var atEnd by remember { mutableStateOf(false) }
+                            Image(
+                                painter = rememberAnimatedVectorPainter(image, atEnd),
+                                contentDescription = "VectorDrawable",
+                                modifier = Modifier.clickable {
+                                    atEnd = !atEnd
+                                }.size(24.dp),
+                            )
                         }
+
 
 
                     }
