@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="256dp"
+    android:height="256dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <group
+        android:name="facegroup"
+        android:pivotX="12"
+        android:pivotY="12">
+        <path
+            android:name="cara"
+            android:strokeLineCap="square"
+            android:strokeWidth="2"
+            android:fillColor="#D6AB33"
+            android:pathData="M 50,50 m -48,0 a 48,48 0 1,0 96,0 a 48,48 0 1,0 -96,0"
+            />
+        <path
+            android:name="ojo1"
+            android:strokeLineCap="square"
+            android:strokeWidth="2"
+            android:fillColor="#000000"
+            android:pathData="M 35,40 m -7,0 a 7,7 0 1,0 14,0 a 7,7 0 1,0 -14,0"
+            />
+        <path
+            android:name="ojo2"
+            android:strokeLineCap="square"
+            android:strokeWidth="2"
+            android:fillColor="#000000"
+            android:pathData="M 65,40 m -7,0 a 7,7 0 1,0 14,0 a 7,7 0 1,0 -14,0"
+            />
+        <path
+            android:name="boca_sad"
+            android:strokeLineCap="square"
+            android:strokeWidth="2"
+            android:strokeColor="#000000"
+            android:pathData="M 30,75 Q 50,55 70,75"
+            />
+
+    </group>
+</vector>

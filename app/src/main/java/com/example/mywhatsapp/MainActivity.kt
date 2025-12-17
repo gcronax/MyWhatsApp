@@ -261,15 +261,46 @@ fun Chat(modifier: Modifier) {
 
 @Composable
 fun Novedades(modifier: Modifier) {
-    Column (modifier= modifier.fillMaxSize()){ Text(text = "novedades") }
+    Column (modifier= modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+        ){
+
+        val image =
+            AnimatedImageVector.animatedVectorResource(R.drawable.ad_animaciones_pause_to_play
+            )
+        var atEnd by remember { mutableStateOf(false) }
+        Image(
+            painter = rememberAnimatedVectorPainter(image, atEnd),
+            contentDescription = "VectorDrawable",
+            modifier = Modifier.clickable {
+                atEnd = !atEnd
+            }.size(240.dp),
+        )
+    }
 
 
 }
 
 @Composable
 fun Llamadas(modifier: Modifier) {
-    Column (modifier= modifier.fillMaxSize()){ Text(text = "llamadas") }
+    Column (modifier= modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
 
+        val image =
+            AnimatedImageVector.animatedVectorResource(R.drawable.ad_face_animation
+            )
+        var atEnd by remember { mutableStateOf(false) }
+        Image(
+            painter = rememberAnimatedVectorPainter(image, atEnd),
+            contentDescription = "VectorDrawable",
+            modifier = Modifier.clickable {
+                atEnd = !atEnd
+            }.size(240.dp),
+        )
+    }
 }
 
 @Composable

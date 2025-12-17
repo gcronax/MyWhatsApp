@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_face_sad">
+    <target
+        android:name="boca_sad"
+        android:animation="@anim/sad_happy" />
+
+</animated-vector>
